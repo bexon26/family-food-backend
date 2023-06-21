@@ -75,7 +75,7 @@ import express from "express";
 // app.delete("/dish/:id", checkAuth, PostController.remove);
 // app.patch("/dish/:id", checkAuth, dishCreateValidation, PostController.update);
 
-app.listen( (err) => {
+app.listen(4444, (err) => {
   if (err) {
     return console.log(err);
   }
