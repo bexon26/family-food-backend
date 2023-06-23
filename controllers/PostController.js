@@ -1,4 +1,5 @@
 import DishModel from "../models/Dish.js";
+import { readFileSync } from "node:fs"
 
 export const getAll = async (req, res) => {
   try {
@@ -63,7 +64,11 @@ export const create = async (req, res) => {
       category: req.body.category,
       raiting: req.body.raiting,
       weight: req.body.weight,
-      imageUrl: req.body.imageUrl,
+      // imageUrl: req.body.imageUrl,
+      image: {
+        data: readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+        contentType: 'image/png'
+    },
       user: req.userId,
     });
 

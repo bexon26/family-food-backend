@@ -4,19 +4,16 @@ import cors from "cors";
 
 import mongoose from "mongoose";
 
+import bodyParser from "body-parser"
+
+
 import {
   registerValidation,
   loginValidation,
   dishCreateValidation,
 } from "./validations/validations.js";
-import {
-  handleValidationErrors,
-   checkAuth,
-} from "./utils/index.js";
-import {
-  UserController,
-  PostController,
-} from "./controllers/index.js";
+import { handleValidationErrors, checkAuth } from "./utils/index.js";
+import { UserController, PostController } from "./controllers/index.js";
 
 mongoose
   .connect(
@@ -29,10 +26,13 @@ mongoose
     console.log("DB ERROR"), err;
   });
 
- const app = express();
- app.get('/', (req,res)=>{
-   res.send('Hello World')
- })
+  
+  const app = express();
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
@@ -68,7 +68,6 @@ app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
     url: `/uploads/${req.file.originalname}`,
   });
 });
-
 
 app.get("/dish", PostController.getAll);
 app.get("/dish/:id", PostController.getOne);

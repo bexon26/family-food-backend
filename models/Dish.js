@@ -1,45 +1,48 @@
 import mongoose from "mongoose";
 
-const DishSchema = new mongoose.Schema({
-   
-   title: {
+const DishSchema = new mongoose.Schema(
+  {
+    title: {
       type: String,
       required: true,
       unique: true,
-   },
-   description: {
+    },
+    description: {
       type: String,
-      default: ''
-     
-   },
-   titleEN: {
+      default: "",
+    },
+    titleEN: {
       type: String,
-      required: true
-   },
-   descriptionEN: {
+      required: true,
+    },
+    descriptionEN: {
       type: String,
-      default: ''
-     
-   },
-   price: {
+      default: "",
+    },
+    price: {
       type: Number,
       required: true,
-   },
-   category: {
+    },
+    category: {
       type: Number,
       required: true,
-   },
-   raiting: {
+    },
+    raiting: {
       type: Number,
       required: true,
-   },
-   weight: {
+    },
+    weight: {
       type: Number,
       required: true,
-   },
-   imageUrl:String
-}, {
-   timestamps: true,
-})
+    },
+    image: {
+      data: Buffer,
+      contentType: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-export default mongoose.model('Dish', DishSchema)
+export default mongoose.model("Dish", DishSchema);
