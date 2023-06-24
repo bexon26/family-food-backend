@@ -28,15 +28,15 @@ mongoose
 
   
   const app = express();
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+  // app.use(bodyParser.urlencoded({ extended: false }));
+  // app.use(bodyParser.json());
+// app.get("/", (req, res) => {
+//   res.send("Hello World");
+// });
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
-    cb(null, "src/assets/uploads");
+    cb(null, "/uploads");
   },
   filename: (_, file, cb) => {
     cb(null, file.originalname);
@@ -47,7 +47,7 @@ const upload = multer({ storage });
 
 app.use(express.json());
 app.use(cors());
-app.use("/src/assets/uploads", express.static("src/assets/uploads"));
+app.use("/uploads", express.static("uploads"));
 
 app.post(
   "/auth/login",
