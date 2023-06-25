@@ -1,13 +1,32 @@
 import DishModel from "../models/Dish.js";
 
 export const getAll = async (req, res) => {
+  console.log(req.query)
   try {
-    const dishes = await DishModel.find();
-    res.json(dishes);
+    const dishes = await DishModel.find({category:req.query.category?req.query.category:{
+      $exists: true
+    }}).skip((Number(req.query.page-1))*8).limit(8);
+    res.json(dishes.filter((el)=>{
+     
+      return el
+      // return req.query.category? String(el.category) === req.query.category:el
+    }));
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Не удалось получить блюда",
+    });
+  }
+};
+export const getAllCount = async (req, res) => {
+  
+  try {
+    const dishesCount = await DishModel.count();
+    res.json(dishesCount);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Не удалось получить количество блюд",
     });
   }
 };
