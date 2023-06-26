@@ -18,10 +18,13 @@ export const getAll = async (req, res) => {
     });
   }
 };
-export const getAllCount = async (req, res) => {
-  
+export const getCategoryCount = async (req, res) => {
+ 
   try {
-    const dishesCount = await DishModel.count();
+    const dishesCount = await DishModel.find({category:req.query.category?req.query.category:{
+      $exists: true
+    }}).count();
+    console.log(dishesCount)
     res.json(dishesCount);
   } catch (error) {
     console.log(error);

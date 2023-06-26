@@ -68,7 +68,7 @@ app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
 });
 
 app.get("/dish", PostController.getAll);
-app.get("/dish/count", PostController.getAllCount);
+app.get("/dish/count", PostController.getCategoryCount);
 app.get("/dish/:id", PostController.getOne);
 app.post("/dish", checkAuth, dishCreateValidation, PostController.create);
 app.delete("/dish/:id", checkAuth, PostController.remove);
