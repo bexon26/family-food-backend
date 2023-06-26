@@ -90,7 +90,7 @@ export const create = async (req, res) => {
     //     data: readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
     //     contentType: 'image/png'
     // },
-      user: req.userId,
+      user: req.body.userId,
     });
 
     await dish.save();
