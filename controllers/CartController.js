@@ -72,15 +72,20 @@ export const getCart = async (req, res) => {
 // };
 
 export const create = async (req, res) => {
+  console.log(req.body.title)
   try {
+    
     const cart = new CartModel({
-      id: req.body.id,
-      title: req.body.title,
+      userId: req.body.title,
+      dishes:[
+        {title: req.body.title,
       titleEN: req.body.titleEN,
       price: req.body.price,
       weight: req.body.weight,
       imageUrl: req.body.imageUrl,
-      userId: req.body.userId,
+      }
+    ]
+      
     });
 
     await cart.save();
