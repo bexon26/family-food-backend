@@ -4,32 +4,12 @@ const CartSchema = new mongoose.Schema(
   {
     userId: {
       type: String,
+      unique: true,
     },
     dishes: [
-      {
-        title: {
-          // unique: false,
-          type: String,
-          required: true,
-          unique: true,
-        },
-
-        titleEN: {
-          type: String,
-          required: true,
-        },
-
-        price: {
-          type: Number,
-          required: true,
-        },
-        weight: {
-          type: Number,
-          required: true,
-        },
-        imageUrl: String,
-      },
+      
     ],
+    totalPrice:{type:Number}
   },
   {
     timestamps: true,

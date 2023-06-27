@@ -69,8 +69,9 @@ app.post("/dish", checkAuth, dishCreateValidation, PostController.create);
 app.delete("/dish/:id", checkAuth, PostController.remove);
 app.patch("/dish/:id", checkAuth, dishCreateValidation, PostController.update);
 
-app.post("/cart",  CartController.create);
 app.get("/cart",  CartController.getCart);
+app.post("/cart",  CartController.createUserCart);
+app.patch("/cart",  CartController.addToCart);
 
 
 app.listen(4444, (err) => {

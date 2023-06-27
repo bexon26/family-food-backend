@@ -1,23 +1,21 @@
 import CartModel from "../models/Cart.js";
+// import CartDishModel from "../models/CartDish.js";
 
 export const getCart = async (req, res) => {
-  console.log(req.query)
+  console.log(req.query.userId);
   try {
-    const cart = await CartModel.find();
-    res.json(cart.filter((el)=>{
-     
-      return el
-      // return req.query.category? String(el.category) === req.query.category:el
-    }));
+    const cart = await CartModel.find({userId:req.query.userId});
+    res.json(cart[0].dishes)
+    
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Не удалось получить блюда",
+      message: "Не удалось получить корзину пользователя",
     });
   }
 };
 // export const getCategoryCount = async (req, res) => {
- 
+
 //   try {
 //     const dishesCount = await DishModel.find({category:req.query.category?req.query.category:{
 //       $exists: true
@@ -71,21 +69,40 @@ export const getCart = async (req, res) => {
 //   }
 // };
 
-export const create = async (req, res) => {
-  console.log(req.body.title)
+// export const create = async (req, res) => {
+//   console.log(req.body.title)
+//   try {
+
+//     const cart = new CartModel({
+//       userId: req.body.userId,
+//       dishes:[
+//         {title: req.body.title,
+//       titleEN: req.body.titleEN,
+//       price: req.body.price,
+//       weight: req.body.weight,
+//       imageUrl: req.body.imageUrl,
+//       }
+//     ]
+
+//     });
+
+//     await cart.save();
+
+//     res.json(cart);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       message: "Не удалось создать блюдо",
+//     });
+//   }
+// };
+export const createUserCart = async (req, res) => {
+  console.log(req.body);
   try {
-    
     const cart = new CartModel({
-      userId: req.body.title,
-      dishes:[
-        {title: req.body.title,
-      titleEN: req.body.titleEN,
-      price: req.body.price,
-      weight: req.body.weight,
-      imageUrl: req.body.imageUrl,
-      }
-    ]
-      
+      userId: req.body.userId,
+      dishes: [],
+      totalPrice: 1
     });
 
     await cart.save();
@@ -99,40 +116,43 @@ export const create = async (req, res) => {
   }
 };
 
-// export const update = async (req, res) => {
-//   console.log(req.params)
-//   try {
-//     const dishId = req.params.id;
-//     const dish = await DishModel.findOneAndUpdate(
-//       { _id: dishId },
-//       {
-        
-//         title: req.body.title,
-//         description: req.body.description,
-//         titleEN: req.body.titleEN,
-//         descriptionEN: req.body.descriptionEN,
-//         price: req.body.price,
-//         category: req.body.category,
-//         raiting: req.body.raiting,
-//         weight: req.body.weight,
-//         imageUrl: req.body.imageUrl,
-//         user: req.userId,
-//       }
-//     );
-//     if (!dish) {
-//       res.status(404).json({
-//         message: "Не удалось найти обновляемое блюдо",
-//       });
-//       return;
-//     }
+export const addToCart = async (req, res) => {
+  console.log(req.body);
+  try {
+    // const dishId = req.params.id;
+    const userId = req.body.userId;
 
-//     res.json({
-//       success:true
-//     })
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       message: "Не удалось обновить блюдо",
-//     });
-//   }
-// };
+    console.log(typeof userId);
+    const dish = await CartModel.findOneAndUpdate(
+   
+      { userId: userId },
+      {
+        $push: {
+          dishes: {
+            title: req.body.title,
+            titleEN: req.body.titleEN,
+            price: req.body.price,
+            weight: req.body.weight,
+            imageUrl: req.body.image,
+            count:1
+          },
+        },
+      }
+    );
+    if (!dish) {
+      res.status(404).json({
+        message: "Не удалось найти обновляемое блюдо",
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Не удалось обновить блюдо",
+    });
+  }
+};
