@@ -36,7 +36,7 @@ const DishSchema = new mongoose.Schema(
       required: true,
     },
     imageUrl:{
-      type: Number,
+      type: String,
       required: true}
    //  image: {
    //    data: Buffer,

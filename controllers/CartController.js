@@ -4,9 +4,8 @@ import CartModel from "../models/Cart.js";
 export const getCart = async (req, res) => {
   console.log(req.query.userId);
   try {
-    const cart = await CartModel.find({userId:req.query.userId});
-    res.json(cart[0].dishes)
-    
+    const cart = await CartModel.find({ userId: req.query.userId });
+    res.json(cart[0].dishes);
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -102,7 +101,7 @@ export const createUserCart = async (req, res) => {
     const cart = new CartModel({
       userId: req.body.userId,
       dishes: [],
-      totalPrice: 1
+      totalPrice: 1,
     });
 
     await cart.save();
@@ -117,26 +116,61 @@ export const createUserCart = async (req, res) => {
 };
 
 export const addToCart = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     // const dishId = req.params.id;
     const userId = req.body.userId;
 
-    console.log(typeof userId);
+    // console.log(req.body);
     const dish = await CartModel.findOneAndUpdate(
-   
       { userId: userId },
       {
         $push: {
           dishes: {
+            _id: req.body._id,
             title: req.body.title,
             titleEN: req.body.titleEN,
             price: req.body.price,
             weight: req.body.weight,
-            imageUrl: req.body.image,
-            count:1
+            imageUrl: req.body.imageUrl,
+            count: 1,
           },
         },
+      }
+    );
+    if (!dish) {
+      res.status(404).json({
+        message: "Не удалось найти обновляемое блюдо",
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Не удалось обновить блюдо",
+    });
+  }
+};
+
+export const plusItem = async (req, res) => {
+  console.log(req.body);
+  try {
+     const dishId = req.params.id;
+    const userId = req.body.userId;
+
+    // console.log(req.body);
+    const dish = await CartModel.findOneAndUpdate(
+      {   dishes:{ $elemMatch: {_id: dishId}} },
+      {
+        
+          dishes: {
+            count: req.body.count,
+          },
+        
       }
     );
     if (!dish) {
