@@ -156,22 +156,17 @@ export const addToCart = async (req, res) => {
   }
 };
 
-export const plusItem = async (req, res) => {
-  console.log(req.body);
+export const changeCountItem = async (req, res) => {
   try {
-     const dishId = req.params.id;
+    const dishId = req.body._id;
     const userId = req.body.userId;
-
-    // console.log(req.body);
+    console.log(req.body)
     const dish = await CartModel.findOneAndUpdate(
-      {   dishes:{ $elemMatch: {_id: dishId}} },
+      { userId: userId, dishes: { $elemMatch: { _id: dishId } } },
       {
-        
-          dishes: {
-            count: req.body.count,
-          },
-        
-      }
+        $set: { "dishes.$.count": req.body.countDish },
+      },
+      { new: true }
     );
     if (!dish) {
       res.status(404).json({
