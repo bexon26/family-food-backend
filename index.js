@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer"; // библиотека для загрузки картинок
 import cors from "cors";
+import request from "request";
 
 import mongoose from "mongoose";
 
@@ -73,6 +74,9 @@ app.get("/cart",  CartController.getCart);
 app.post("/cart",  CartController.createUserCart);
 app.patch("/cart",  CartController.addToCart);
 app.patch("/cart/plus",  CartController.changeCountItem);
+app.delete("/cart/clear",  CartController.remove);
+app.patch("/cart/clearDish",  CartController.clearDish);
+app.post("/cart/sendMessage",  CartController.sendMessage);
 
 
 app.listen(4444, (err) => {
@@ -82,3 +86,19 @@ app.listen(4444, (err) => {
 
   console.log("Server OK");
 });
+
+  // request.post(
+  //   `https://api.telegram.org/bot6219944438:AAGWlBXrHn17IvWiX7Nk6RUG_67HWJ5wUgU/sendMessage?chat_id=-1001911528979&parse_mode=HTML&text=gergdgd`,
+  //   function (error, response, body) {
+  //     //не забываем обработать ответ
+  //     console.log("error:", error);
+  //     console.log("statusCode:", response && response.statusCode);
+  //     console.log("body:", body);
+  //     if (response.statusCode === 200) {
+  //       // response.status(200).json({ status: "ok", message: "Успешно отправлено!" });
+  //     }
+  //     if (response.statusCode !== 200) {
+  //       // response.status(400).json({ status: "error", message: "Произошла ошибка!" });
+  //     }
+  //   }
+  // );
