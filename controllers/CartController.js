@@ -3,7 +3,7 @@ import CartModel from "../models/Cart.js";
 // import CartDishModel from "../models/CartDish.js";
 
 export const getCart = async (req, res) => {
-  console.log(req.query.userId);
+ // console.log(req.query.userId);
   try {
     const cart = await CartModel.find({ userId: req.query.userId });
     res.json(cart[0].dishes);
@@ -49,7 +49,7 @@ export const getCart = async (req, res) => {
 // };
 
 export const remove = async (req, res) => {
-  console.log(req.query);
+ // console.log(req.query);
   try {
     const userId = req.query.userId;
 
@@ -99,7 +99,7 @@ export const remove = async (req, res) => {
 //   }
 // };
 export const createUserCart = async (req, res) => {
-  console.log(req.body);
+  //(req.body);
   try {
     const cart = new CartModel({
       userId: req.body.userId,
@@ -127,7 +127,7 @@ export const sendMessage = async (req, res) => {
     cart[0].dishes.forEach(dish=>{
       msg += '<b>Название</b>: ' + dish.title + '<b> Количество</b>: '+ dish.count + '<b> Цена</b>: '+ dish.price+ '\n'
       price+=Number(dish.count)*Number(dish.price)
-      console.log(price)
+      //console.log(price)
     })
 
     // console.log(price)
@@ -207,7 +207,7 @@ export const changeCountItem = async (req, res) => {
   try {
     const dishId = req.body._id;
     const userId = req.body.userId;
-    console.log(req.body);
+   // console.log(req.body);
     const dish = await CartModel.findOneAndUpdate(
       { userId: userId, dishes: { $elemMatch: { _id: dishId } } },
       {
@@ -236,7 +236,7 @@ export const clearDish = async (req, res) => {
   try {
     const dishId = req.body._id;
     const userId = req.body.userId;
-    console.log(req.body);
+    //console.log(req.body);
     const dish = await CartModel.findOneAndUpdate(
       { userId: userId },
       {
