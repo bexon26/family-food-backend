@@ -38,12 +38,16 @@ export const getAll = async (req, res) => {
   try {
     //console.log(JSON.parse(await client.get("dishes")))
     let dishes = JSON.parse(await client.get("dishes"));
+    
+    
     if (!dishes) {
       dishes = await DishModel.find({category:req.query.category?req.query.category:{
         $exists: true
       }});
-      
+      console.log("Загрузка из базы")
       setAsync("dishes", JSON.stringify(dishes))
+    } else {
+      console.log("Загрузка из redis")
     }
     //dishes.filter((el,i))
     //dishes.skip((Number(req.query.page-1))*8).limit(8)
