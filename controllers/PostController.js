@@ -12,8 +12,8 @@ const client = await redis.createClient({
 }).on('error', err => console.log('Redis Client Error', err))
 .connect(console.log("Connected to Redis server"));
 
- export const getAsync = promisify(client.get).bind(client);
- export const setAsync = promisify(client.set).bind(client);
+const getAsync = promisify(client.get).bind(client);
+const setAsync = promisify(client.set).bind(client);
 
 // app.get("/dish", async (req, res) => {
  
@@ -33,33 +33,28 @@ const client = await redis.createClient({
 
 
 export const getAll = async (req, res) => {
-  
-  // console.log(req.query)
   try {
-    //console.log(JSON.parse(await client.get("dishes")))
-    let dishes = JSON.parse(await client.get("dishes"));
-    
+    //Ищем блюда определенной категории в редис
+    let dishes = JSON.parse(await client.get(`dishes_category${req.query.category}`));
     
     if (!dishes) {
+      //Ищем блюда определенной категории в MongoDB
       dishes = await DishModel.find({category:req.query.category?req.query.category:{
         $exists: true
       }});
       console.log("Загрузка из базы")
-      setAsync("dishes", JSON.stringify(dishes))
+      //Записываем блюда определленной категории в редис
+      setAsync(`dishes_category${req.query.category}`, JSON.stringify(dishes));
     } else {
       console.log("Загрузка из redis")
     }
-    //dishes.filter((el,i))
-    //dishes.skip((Number(req.query.page-1))*8).limit(8)
-     //const 
-      //setAsync('dishes', JSON.stringify(dishes));
+     
+    //Фильтр количества вывода на одну страницу   
     res.json(dishes.filter((el,i,array)=>{
       if (i>=(Number(req.query.page-1))*8 & i<(Number(req.query.page))*8){
         return el
-      }
-     //console.log(value)
-      
-      // return req.query.category? String(el.category) === req.query.category:el
+      } 
+       //return req.query.category? String(el.category) === req.query.category:el
     }));
   } catch (error) {
     console.log(error);
@@ -69,12 +64,13 @@ export const getAll = async (req, res) => {
   }
 };
 export const getCategoryCount = async (req, res) => {
- 
+  let dishesCount = JSON.parse(await client.get(`dishes_count_category${req.query.category}`));
   try {
-    const dishesCount = await DishModel.find({category:req.query.category?req.query.category:{
+    dishesCount = await DishModel.find({category:req.query.category?req.query.category:{
       $exists: true
     }}).count();
     //console.log(dishesCount)
+    setAsync(`dishes_count_category${req.query.category}`, JSON.stringify(dishesCount));
     res.json(dishesCount);
   } catch (error) {
     console.log(error);
