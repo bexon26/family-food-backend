@@ -15,24 +15,8 @@ const client = await redis.createClient({
 const getAsync = promisify(client.get).bind(client);
 const setAsync = promisify(client.set).bind(client);
 
-// app.get("/dish", async (req, res) => {
- 
-//   // Check if data is in cache
-  
-//   let dishAll = JSON.parse(await getAsync("dishAll"));
-//   if (!dishAll) {
-//     dishAll = PostController.getAll
-//     console.log("dishAll")
-//     await setAsync("dishAll", JSON.stringify(user))
-//   }
-
-
-// });
-
-
-
-
 export const getAll = async (req, res) => {
+  
   try {
     //Ищем блюда определенной категории в редис
     let dishes = JSON.parse(await client.get(`dishes_category${req.query.category}`));
@@ -48,9 +32,15 @@ export const getAll = async (req, res) => {
     } else {
       console.log("Загрузка из redis")
     }
-     
-    //Фильтр количества вывода на одну страницу   
-    res.json(dishes.filter((el,i,array)=>{
+    
+    //
+    const  orderASCorDESC = function(){
+      return req.query.order === 'desc'?  -1 : 1
+    }
+    
+    //Сортировка и Фильтр количества вывода на одну страницу  
+    
+    res.json(dishes.sort((a, b) => a[`${req.query.sortBy}`] > b[`${req.query.sortBy}`] ? orderASCorDESC() : -orderASCorDESC()).filter((el,i,array)=>{
       if (i>=(Number(req.query.page-1))*8 & i<(Number(req.query.page))*8){
         return el
       } 
