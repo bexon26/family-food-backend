@@ -16,7 +16,7 @@ const getAsync = promisify(client.get).bind(client);
 const setAsync = promisify(client.set).bind(client);
 
 export const getAll = async (req, res) => {
-  
+  console.log(req.query)
   try {
     //Ищем блюда определенной категории в редис
     let dishes = JSON.parse(await client.get(`dishes_category${req.query.category}`));
@@ -40,7 +40,8 @@ export const getAll = async (req, res) => {
     
     //Сортировка и Фильтр количества вывода на одну страницу  
     
-    res.json(dishes.sort((a, b) => a[`${req.query.sortBy}`] > b[`${req.query.sortBy}`] ? orderASCorDESC() : -orderASCorDESC()).filter((el,i,array)=>{
+    res.json(dishes.sort((a, b) => a[`${req.query.sortBy}`] > b[`${req.query.sortBy}`] ? orderASCorDESC() : -orderASCorDESC()).filter((item) => req.query.search?item.title.toLowerCase().includes(req.query.search.toLowerCase()):true ).filter((el,i,array)=>{
+      console.log(el.title)
       if (i>=(Number(req.query.page-1))*8 & i<(Number(req.query.page))*8){
         return el
       } 
@@ -54,6 +55,7 @@ export const getAll = async (req, res) => {
   }
 };
 export const getCategoryCount = async (req, res) => {
+  
   let dishesCount = JSON.parse(await client.get(`dishes_count_category${req.query.category}`));
   try {
     dishesCount = await DishModel.find({category:req.query.category?req.query.category:{
